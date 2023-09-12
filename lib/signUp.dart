@@ -35,7 +35,10 @@ class ViewSignUp extends State<SignUp> {
         email: email,
         password: password,
       );
+      EasyLoading.showSuccess("Great Success!");
+      Navigator.of(context).pop();
     } on FirebaseAuthException catch (e) {
+      EasyLoading.dismiss();
       if (e.code == 'email-already-in-use') {
         CoolAlert.show(
             context: context,
@@ -44,8 +47,7 @@ class ViewSignUp extends State<SignUp> {
             text: "Account already exists");
       }
     }
-    EasyLoading.showSuccess("Great Success!");
-    Navigator.of(context).pop();
+
   }
   @override
   Widget build(BuildContext context) {
