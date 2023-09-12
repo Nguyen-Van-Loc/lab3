@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "174742372698",
+    "project_id": "login-f9773",
+    "storage_bucket": "login-f9773.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:174742372698:android:21656280f959070c343363",
+        "android_client_info": {
+          "package_name": "com.example.lab3"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtQl_LOSgT9zmpSOXKzl6gZNHg2YJAFiw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
