@@ -16,18 +16,35 @@ class login extends StatefulWidget {
 }
 
 class ViewLogin extends State<login> {
-  String? email, pass;
+  String email="", pass="";String emailErr="", passErr="";
   final _emailControler = TextEditingController();
   final _passControler = TextEditingController();
-  final checkValidate = GlobalKey<FormState>();
   bool _obscured = true;
-
   void _toggleObscured() {
     setState(() {
       _obscured = !_obscured;
     });
   }
-
+  void validateEmail(){
+    setState(() {
+      emailErr =ValidateEmailLogin(_emailControler.text);
+    });
+  }
+  void validatePass(){
+    setState(() {
+      passErr =ValidatePassLogin(_passControler.text);
+    });
+  }
+  void onLogin(){
+    validateEmail();
+    if(emailErr.isEmpty){
+      validatePass();
+      if(passErr.isEmpty){
+        EasyLoading.show(status: "loading..");
+        _signIn();
+      }
+    }
+  }
   void _signIn() async {
     // EasyLoading.show(status: "loading...");
     String email = _emailControler.text;
@@ -45,7 +62,7 @@ class ViewLogin extends State<login> {
             ));
       EasyLoading.dismiss();
     } catch (e) {
-      EasyLoading.showToast("Email or password is incorrect");
+      EasyLoading.showError("Email or password is incorrect");
     }
   }
 
@@ -71,9 +88,7 @@ class ViewLogin extends State<login> {
                   .withOpacity(0.5), // Đặt màu nền trong suốt
             ),
           ),
-          Form(
-            key: checkValidate,
-            child: Column(children: [
+           Column(children: [
               Container(
                 margin: const EdgeInsets.only(top: 170, bottom: 50),
                 child: const Text(
@@ -100,12 +115,8 @@ class ViewLogin extends State<login> {
                       margin: const EdgeInsets.symmetric(horizontal: 30),
                       child: TextFormField(
                         controller: _emailControler,
-                        validator: (text) {
-                          return ValidateEmailLogin(text);
-                        },
                         decoration: InputDecoration(
-                            errorStyle:
-                                const TextStyle(color: Color(0xffff0000)),
+                            errorText: emailErr.isNotEmpty?emailErr:null,
                             fillColor: Colors.white,
                             filled: true,
                             hintText: "Email Address",
@@ -136,12 +147,10 @@ class ViewLogin extends State<login> {
                                   const EdgeInsets.only(left: 30, right: 30),
                               child: TextFormField(
                                 controller: _passControler,
-                                validator: (text) {
-                                  return ValidatePassLogin(text);
-                                },
                                 obscureText: _obscured,
                                 keyboardType: TextInputType.visiblePassword,
                                 decoration: InputDecoration(
+                                    errorText: passErr.isNotEmpty?passErr:null,
                                     suffixIcon: GestureDetector(
                                       onTap: _toggleObscured,
                                       child: _obscured
@@ -184,10 +193,7 @@ class ViewLogin extends State<login> {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: () {
-                    if (checkValidate.currentState!.validate()) {
-                      EasyLoading.show(status: "loading..");
-                      _signIn();
-                    }
+                      onLogin();
                   },
                   style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xff0acf83)),
@@ -259,7 +265,6 @@ class ViewLogin extends State<login> {
                 ),
               ),
             ]),
-          ),
           Column(mainAxisAlignment: MainAxisAlignment.end, children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

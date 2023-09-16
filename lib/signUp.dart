@@ -20,11 +20,39 @@ class ViewSignUp extends State<SignUp> {
   final _repassControler = TextEditingController();
   bool _obscured = true;
   final checkValidate = GlobalKey<FormState>();
-
+  String emailErr="",passErr="",rePassErr="";
   void _toggleObscured() {
     setState(() {
       _obscured = !_obscured;
     });
+  }
+  void validateEmail(){
+    setState(() {
+      emailErr =ValidateEmail(_emailControler.text);
+    });
+  }
+  void validatePass(){
+    setState(() {
+      passErr =ValidatePass(_passControler.text);
+    });
+  }
+  void validateRePass(){
+    setState(() {
+      rePassErr =ValidateRepass(_repassControler.text,_passControler.text);
+    });
+  }
+  void onSignup(){
+    validateEmail();
+    if(emailErr.isEmpty){
+      validatePass();
+      if(passErr.isEmpty){
+        validateRePass();
+        if(rePassErr.isEmpty){
+          EasyLoading.show(status: "loading...");
+          _signUp();
+        }
+      }
+    }
   }
   void _signUp() async {
     String email = _emailControler.text;
@@ -99,11 +127,9 @@ class ViewSignUp extends State<SignUp> {
                         margin: const EdgeInsets.symmetric(horizontal: 30),
                         child: TextFormField(
                             controller: _emailControler,
-                            validator: (text) {
-                              return ValidateEmail(text);
-                            },
                             onChanged: (txt) => txt = email!,
                             decoration: InputDecoration(
+                                errorText: emailErr.isNotEmpty?emailErr:null,
                                 errorStyle:
                                     const TextStyle(color: Color(0xffff0000)),
                                 fillColor: Colors.white,
@@ -138,11 +164,10 @@ class ViewSignUp extends State<SignUp> {
                                   controller: _passControler,
                                   obscureText: _obscured,
                                   keyboardType: TextInputType.visiblePassword,
-                                  validator: (text) {
-                                    return ValidatePass(text);
-                                  },
+
                                   onChanged: (txt) => txt = pass!,
                                   decoration: InputDecoration(
+                                      errorText: passErr.isNotEmpty?passErr:null,
                                       errorStyle: const TextStyle(
                                           color: Color(0xffff0000)),
                                       suffixIcon: GestureDetector(
@@ -188,12 +213,9 @@ class ViewSignUp extends State<SignUp> {
                                   controller: _repassControler,
                                   obscureText: _obscured,
                                   keyboardType: TextInputType.visiblePassword,
-                                  validator: (text) {
-                                    return ValidateRepass(
-                                        text, _passControler.text);
-                                  },
                                   onChanged: (txt) => txt = repass!,
                                   decoration: InputDecoration(
+                                      errorText: rePassErr.isNotEmpty?rePassErr:null,
                                       errorStyle: const TextStyle(
                                           color: Color(0xffff0000)),
                                       suffixIcon: GestureDetector(
@@ -225,8 +247,7 @@ class ViewSignUp extends State<SignUp> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (checkValidate.currentState!.validate()) {
-                            EasyLoading.show(status: "loading...");
-                            _signUp();
+                            onSignup();
                           }
                         },
                         style: ElevatedButton.styleFrom(
