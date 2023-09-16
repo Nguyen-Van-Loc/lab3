@@ -295,4 +295,10 @@ class ViewLogin extends State<login> {
       ),
     );
   }
+  @override
+  void dispose() {
+    _passControler.dispose();
+    _emailControler.dispose();
+    super.dispose();
+  }
 }
